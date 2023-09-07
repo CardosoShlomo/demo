@@ -1,1 +1,1 @@
-[This project is deployed on](http://iepok.com)
+This project is deployed on [iepok.com](http://iepok.com)
