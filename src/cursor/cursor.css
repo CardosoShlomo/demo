@@ -1,0 +1,15 @@
+.cursor {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 10px 10px 60px -8px #0003;
+  transition: opacity 0.3s;
+}
+
+.mainCursor {
+  height: 10px;
+  width: 10px;
+  z-index: 5;
+  border-radius: 3px;
+  border: 1px solid #fff;
+}
