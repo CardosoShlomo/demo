@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react'
-import Container from '../components/Container'
-import Cursors from '../cursor/Cursors';
-import Code from '../components/Code';
+import React, { useEffect, useState } from 'react'
+import Container from '../../components/Container'
+import Cursors from '../../cursor/Cursors';
+import Code from './code/Code';
 
 export default function Riddle() {
 

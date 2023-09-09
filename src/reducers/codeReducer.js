@@ -3,27 +3,27 @@ import { produce } from "immer";
 
 export default function codeReducer(state = {
   items: [
-    {id: 1, lvl: 0, line: 'if up is border'},
-    {id: 2, lvl: 1, line: 'go left'},
-    {id: 3, lvl: 0, line: 'else'},
-    {id: 4, lvl: 1, line: 'go up'},
-    {id: 5, lvl: 0, line: 'counter = 0'},
-    {id: 6, lvl: 0, line: 'while up is not zero'},
-    {id: 7, lvl: 1, line: 'if up is one'},
-    {id: 8, lvl: 2, line: 'counter += 1'},
-    {id: 9, lvl: 0, line: 'if up is border'},
-    {id: 10, lvl: 1, line: 'go left'},
-    {id: 11, lvl: 0, line: 'else'},
-    {id: 12, lvl: 1, line: 'go up'},
-    {id: 13, lvl: 0, line: 'counter = 0'},
-    {id: 14, lvl: 0, line: 'while up is not zero'},
-    {id: 15, lvl: 1, line: 'if up is one'},
-    {id: 16, lvl: 2, line: 'counter += 1'},
-    {id: 17, lvl: 2, line: 'break'},
+    {id: 1, lvl: 0, line: ['if', 'up', 'is', 'border']},
+    {id: 2, lvl: 1, line: ['go', 'left']},
+    {id: 3, lvl: 0, line: ['else']},
+    {id: 4, lvl: 1, line: ['go', 'up']},
+    {id: 5, lvl: 0, line: ['counter', '=', '0']},
+    {id: 6, lvl: 0, line: ['while', 'up', 'is', 'not', 'zero']},
+    {id: 7, lvl: 1, line: ['if', 'up', 'is', 'one']},
+    {id: 8, lvl: 2, line: ['counter', '+=', '1']},
+    {id: 9, lvl: 0, line: ['if', 'up', 'is', 'border']},
+    {id: 10, lvl: 1, line: ['go', 'left']},
+    {id: 11, lvl: 0, line: ['else']},
+    {id: 12, lvl: 1, line: ['go', 'up']},
+    {id: 13, lvl: 0, line: ['counter', '=', '0']},
+    {id: 14, lvl: 0, line: ['while', 'up', 'is', 'not', 'zero']},
+    {id: 15, lvl: 1, line: ['if', 'up', 'is', 'one']},
+    {id: 16, lvl: 2, line: ['counter', '+=', '1']},
+    {id: 17, lvl: 2, line: ['break']},
   ],
   selectedPart: {
     itemId: null,
-    linePartIndex: null,
+    partIndex: null,
   }
 }, {type, payload}) {
   switch (type) {
@@ -53,12 +53,12 @@ export default function codeReducer(state = {
   }
 }
 
-export const selectCodePartAction = (itemId, linePartIndex) => {
+export const selectCodePartAction = (itemId, partIndex) => {
   store.dispatch({
     type: 'selectPart',
     payload: {part: {
       itemId,
-      linePartIndex,
+      partIndex,
     }}
   })
 }
@@ -69,8 +69,15 @@ export const addCodeItemAction = (index, lvl) => {
     payload: {index, item: {
       id: Date.now(),
       lvl,
-      line: '',
+      line: [''],
     }},
+  });
+}
+
+export const updateCodeItemAction = (item) => {
+  store.dispatch({
+    type: 'updateCodeItem',
+    payload: {item},
   });
 }
 

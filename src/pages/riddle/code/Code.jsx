@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import Container from './Container'
-import store from '../store';
+import React from 'react'
+import Container from '../../../components/Container'
 import CodeItem from './CodeItem';
+import { useSelector } from 'react-redux';
 
 export default function Code() {
 
-  const [items, setItems] = useState(store.getState().codeReducer.items);
-
-  useEffect(() => store.subscribe(() => {
-    setItems(store.getState().codeReducer.items);
-  }), []);
+  const items = useSelector(state => state.codeReducer.items);
 
   return (
     <Container className='expanded column' style={{
