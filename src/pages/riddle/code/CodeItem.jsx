@@ -11,9 +11,9 @@ import InnerLine from './InnerLine';
 
 export default function CodeItem({index, item}) {
 
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false)
 
-  const selectedPartId = useSelector(state => state.codeReducer.selectedPart.itemId);
+  const selectedPart = useSelector(state => state.codeReducer.selectedPart)
 
   return (
     <Container style={{
@@ -23,7 +23,7 @@ export default function CodeItem({index, item}) {
     }}
     onMouseEnter={() => setIsHovered(true)}
     onMouseLeave={() => setIsHovered(false)}
-    triggerCursorUpdate={selectedPartId === item.id}>
+    triggerCursorUpdate={selectedPart.itemId === item.id && selectedPart}>
       <div className='row' style={{
         justifyContent: 'start',
         width: '100%',
@@ -35,7 +35,7 @@ export default function CodeItem({index, item}) {
         <InnerButton isHovered={isHovered} onClick={() => addCodeItemAction(index + 1, item.lvl)}><AddRoundedIcon fontSize='25px'/></InnerButton>
         <InnerButton isHovered={isHovered} onClick={() => removeCodeItemAction(item.id)}><DeleteOutlineRoundedIcon fontSize='25px'/></InnerButton>
       </div>
-      {selectedPartId === item.id && <DropDownSelector/>}
+      {selectedPart.itemId === item.id && <DropDownSelector/>}
     </Container>
   )
 }

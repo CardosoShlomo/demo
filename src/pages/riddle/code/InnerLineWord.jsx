@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { selectCodePartAction } from "../../../reducers/codeReducer";
 import Container from '../../../components/Container';
 import Word from './Word';
+import KeyWord from './words';
 
 export default function InnerLineWord({word, item, i, isHovered}) {
 
@@ -20,7 +21,7 @@ export default function InnerLineWord({word, item, i, isHovered}) {
     }} onClick={() => {
       selectCodePartAction(selected ? null : item.id, i);
     }}>
-      <Word>{word}</Word>
+      <Word color={word instanceof KeyWord ? word.color : null}>{word instanceof KeyWord ? word.word : word}</Word>
     </Container>
   )
 }
