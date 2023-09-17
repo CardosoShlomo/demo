@@ -16,13 +16,13 @@ export default function DropDownSelectorWord({keyword}) {
       const selectedPart = code.selectedPart;
       const item = code.items.find(e => e.id == selectedPart.itemId);
 
-      const newLine = [...item.line.slice(0, selectedPart.partIndex), keyword];
+      const newLine = [...item.line.slice(0, selectedPart.index), keyword];
 
       if (keyword.isLast) {
         selectCodePartAction();
       } else {
         newLine.push('');
-        selectCodePartAction(selectedPart.itemId, selectedPart.partIndex + 1);
+        selectCodePartAction(selectedPart.itemId, selectedPart.index + 1);
       }
 
       updateCodeItemAction({...item, line: newLine});

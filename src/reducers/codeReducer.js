@@ -24,7 +24,7 @@ export default function codeReducer(state = {
   ],
   selectedPart: {
     itemId: null,
-    partIndex: null,
+    index: null,
   }
 }, {type, payload}) {
   switch (type) {
@@ -54,12 +54,12 @@ export default function codeReducer(state = {
   }
 }
 
-export const selectCodePartAction = (itemId, partIndex) => {
+export const selectCodePartAction = (itemId, index) => {
   store.dispatch({
     type: 'selectPart',
     payload: {part: {
       itemId,
-      partIndex,
+      index,
     }}
   })
 }
@@ -75,7 +75,7 @@ export const addCodeItemAction = (index, lvl) => {
   });
 }
 
-export const updateCodeItemAction = (item) => {
+export const updateCodeItemAction = item => {
   store.dispatch({
     type: 'updateCodeItem',
     payload: {item},
@@ -87,4 +87,39 @@ export const removeCodeItemAction = id => {
     type: 'removeCodeItem',
     payload: {id},
   });
+}
+
+export const lvlDownCodeItemAction = item => {
+  if (item.lvl > 0) {
+    updateCodeItemAction({...item, lvl: item.lvl - 1})
+  }
+}
+
+export const lvlUpCodeItemAction = item => {
+  const items = store.getState().codeReducer.items
+
+  const lastContainer = items.slice(0, items.indexOf(item)).reverse().find(e => e.line.length > 0 && e.line[0].isContainer)
+  
+  if (lastContainer) {
+    let maxTabs = lastContainer.lvl + 1
+    if (item.line.length != 0 && item.line[0] == KeyWord.else) {
+      maxTabs--
+    }
+    if (item.lvl < maxTabs) {
+      updateCodeItemAction({...item, lvl: item.lvl + 1})
+      if (item.line.length > 0 && (item.line[0] == KeyWord.if || item.line[0] == KeyWord.while)) {
+        for (let i = items.indexOf(item) + 1; i < items.length; i++) {
+          const nextItem = items[i]
+          if (nextItem.line.length == 0) continue
+          if (nextItem.lvl > item.lvl) {
+            updateCodeItemAction({...nextItem, lvl: nextItem.lvl + 1})
+          } else if (nextItem.lvl == item.lvl && nextItem.line[0] == KeyWord.else) {
+            updateCodeItemAction({...nextItem, lvl: nextItem.lvl + 1})
+          } else {
+            break
+          }
+        }
+      }
+    }
+  }
 }

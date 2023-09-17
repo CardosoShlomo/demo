@@ -16,8 +16,8 @@ export default function Cursor({index, gap}) {
   const rectRef = useRef({
     left: 0,
     top: 0,
-    width: 12 + gap * 2,
-    height: 12 + gap * 2,
+    width: 10,
+    height: 10,
   });
   const radiusValues = useRef([]);
   
@@ -30,10 +30,10 @@ export default function Cursor({index, gap}) {
       }
     } else {
       const baseRect = {
-        left: mouseX.current - 5 - gap,
-        top: mouseY.current - 5 - gap,
-        width: 12 + gap * 2,
-        height: 12 + gap * 2,
+        left: mouseX.current - 5,
+        top: mouseY.current - 5,
+        width: 10,
+        height: 10,
       }
       for (const key in rectRef.current) {
         rectRef.current[key] += fromTo(rectRef.current[key], baseRect[key]);

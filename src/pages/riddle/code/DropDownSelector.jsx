@@ -7,11 +7,12 @@ export default function DropDownSelector() {
 
   const selectedPart = useSelector(state => state.codeReducer.selectedPart)
   
-  // const items = useSelector(state => state.codeReducer.items)
-  // const item = items.find(e => e.id == selectedPart.itemId)
+  const items = useSelector(state => state.codeReducer.items)
+  const item = items.find(e => e.id == selectedPart.itemId)
+  const former = item.line[selectedPart.index - 1]
 
   const options = Object.values(KeyWord).filter(e => e.isAnOption({
-    partIndex: selectedPart.partIndex,
+    formerKeyWord: former,
   }))
 
   return (

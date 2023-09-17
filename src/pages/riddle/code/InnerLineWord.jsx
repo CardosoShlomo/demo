@@ -9,7 +9,7 @@ export default function InnerLineWord({word, item, i, isHovered}) {
 
   const selectedPart = useSelector(state => state.codeReducer.selectedPart);
 
-  const selected = selectedPart.itemId == item?.id && selectedPart.partIndex == i;
+  const selected = selectedPart.itemId == item?.id && selectedPart.index == i;
 
   return (
     <Container delay={200} style={{

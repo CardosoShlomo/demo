@@ -1,3 +1,5 @@
+import store from "../../../store";
+
 export default class KeyWord {
   constructor(word) {
     this.word = word;
@@ -55,78 +57,13 @@ export default class KeyWord {
       case KeyWord.while:
         return true
     }
-    return false
-  }
-
-  get isFirst() {
-    switch (this) {
-      case KeyWord.if:
-      case KeyWord.else:
-      case KeyWord.while:
-      case KeyWord.break:
-      case KeyWord.continue:
-      case KeyWord.goUp:
-      case KeyWord.goDown:
-      case KeyWord.goLeft:
-      case KeyWord.goRight:
-      case KeyWord.goBack:
-      case KeyWord.moveForward:
-      case KeyWord.moveLeft:
-      case KeyWord.moveRight:
-        return true
-    }
-    return false
-  }
-
-  get isSecond() {
-    switch (this) {
-      case KeyWord.up:
-      case KeyWord.down:
-      case KeyWord.left:
-      case KeyWord.right:
-      case KeyWord.forward:
-        return true
-    }
-    return false
-  }
-
-  get isThird() {
-    switch (this) {
-      case KeyWord.is:
-      case KeyWord.isNot:
-      case KeyWord.isEqualTo:
-      case KeyWord.isNotEqualTo:
-      case KeyWord.isEqualOrGreaterThan:
-      case KeyWord.isEqualOrSmallerThan:
-      case KeyWord.isGreaterThan:
-      case KeyWord.isSmallerThan:
-      case KeyWord.becomes:
-      case KeyWord.plus:
-      case KeyWord.minus:
-      case KeyWord.multiplied:
-      case KeyWord.add:
-      case KeyWord.subtruct:
-      case KeyWord.multiplied:
-        return true
-    }
-    return false
-  }
-
-  get isFourth() {
-    switch (this) {
-      case KeyWord.one:
-      case KeyWord.zero:
-      case KeyWord.border:
-        return true
-    }
-    return false
   }
 
   get isLast() {
     switch (this) {
-      case KeyWord.else:
       case KeyWord.break:
       case KeyWord.continue:
+      case KeyWord.else:
       case KeyWord.goUp:
       case KeyWord.goDown:
       case KeyWord.goLeft:
@@ -140,16 +77,35 @@ export default class KeyWord {
       case KeyWord.border:
         return true
     }
-    return false
+  }
+
+  canBeFirst() {
+    switch (this) {
+      case KeyWord.break:
+      case KeyWord.continue: {
+        return this.storeCheckForBreakAndContinue()
+      }
+      case KeyWord.else: {
+        return this.storeCheckForElse()
+      }
+      case KeyWord.if:
+      case KeyWord.while:
+      case KeyWord.goUp:
+      case KeyWord.goDown:
+      case KeyWord.goLeft:
+      case KeyWord.goRight:
+      case KeyWord.goBack:
+      case KeyWord.moveForward:
+      case KeyWord.moveLeft:
+      case KeyWord.moveRight:
+        return true
+    }
   }
 
   canBeAfter(keyWord) {
-    if (keyWord.isCloser) return
-
     switch (keyWord) {
       case KeyWord.while:
       case KeyWord.if:
-      case KeyWord.else:
         switch (this) {
           case KeyWord.up:
           case KeyWord.down:
@@ -158,6 +114,7 @@ export default class KeyWord {
           case KeyWord.forward:
             return true
         }
+        return false
       case KeyWord.up:
       case KeyWord.down:
       case KeyWord.left:
@@ -168,6 +125,7 @@ export default class KeyWord {
           case KeyWord.isNot:
             return true
         }
+        return false
       case KeyWord.is:
       case KeyWord.isNot:
         switch (this) {
@@ -177,32 +135,69 @@ export default class KeyWord {
             return true
         }
     }
-    return false
+  }
+
+  storeCheck() {
+    const codeReducer = store.getState().codeReducer
+    const items = codeReducer.items
+    const selectedItemId = codeReducer.selectedPart.itemId
+    let indexOfSelectedItem
+    let selectedItemLvl
+    items.forEach((e, i) => {
+      if (e.id == selectedItemId) {
+        indexOfSelectedItem = i
+        selectedItemLvl = e.lvl
+      }
+    })
+    return {
+      items,
+      indexOfSelectedItem,
+      selectedItemLvl,
+    }
+  }
+
+  storeCheckForBreakAndContinue() {
+    const {items, indexOfSelectedItem, selectedItemLvl} = this.storeCheck()
+
+    let lowerLvl = selectedItemLvl
+    for (let i = indexOfSelectedItem - 1; i >= 0; i--) {
+      const item = items[i]
+      if (item.lvl < lowerLvl) {
+        if (item.line.length > 0 && item.line[0] === KeyWord.while) {
+          return true
+        }
+        lowerLvl = item.lvl
+      }
+    }
+  }
+
+  storeCheckForElse() {
+    const {items, indexOfSelectedItem, selectedItemLvl} = this.storeCheck()
+
+    for (let i = indexOfSelectedItem - 1; i >= 0; i--) {
+      const item = items[i]
+      if (item.lvl < selectedItemLvl) return false
+      if (item.lvl == selectedItemLvl) {
+        if (item.line.length > 0) {
+          return item.line[0] === KeyWord.if
+        }
+      }
+    }
   }
 
   isAnOption({
-    partIndex,
+    formerKeyWord,
   }) {
-    switch (partIndex) {
-      case 0: {
-        if (this.isFirst) break
-        return false
-      }
-      case 1: {
-        if (this.isSecond) break
-        return false
-      }
-      case 2: {
-        if (this.isThird) break
-        return false
-      }
-      case 3: {
-        if (this.isFourth) break
-        return false
-      }
+    if (formerKeyWord === undefined) {
+      return this.canBeFirst()
+    } else if (formerKeyWord instanceof KeyWord) {
+      return this.canBeAfter(formerKeyWord)
+    } else {
+      throw 'keyword should be undefined or an instance of KeyWord'
     }
-    return true
   }
+
+  
 
   static if = new KeyWord('if')
   static else = new KeyWord('else')
